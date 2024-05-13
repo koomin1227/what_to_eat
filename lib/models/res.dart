@@ -1,5 +1,3 @@
-
-
 import 'model.dart';
 
 class Res<T> {
@@ -12,15 +10,6 @@ class Res<T> {
      required this.message,
      required this.data,
   });
-
-  Res parseJson(Map<String, dynamic> json, Model target) {
-    return Res(
-      statusCode: json['status'],
-      message: json['message'],
-      data: target.fromJson(json['data']),
-    );
-  }
-
 
   factory Res.fromJson(Map<String, dynamic> json, Model model) {
     return switch (json) {
