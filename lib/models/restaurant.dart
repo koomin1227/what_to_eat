@@ -17,13 +17,13 @@ class Restaurant {
     return switch (json) {
       {
       'name': String name,
-      'thumbnail': String thumbnail,
+      'thumbnail': var thumbnail,
       'restaurantId': String restaurantId,
       'tags': var json,
       } =>
           Restaurant(
             name: name,
-            thumbnail: thumbnail,
+            thumbnail: thumbnail ?? '',
             restaurantId: restaurantId,
             tags: Tag.listFromJsonList(json),
           ),
