@@ -1,8 +1,9 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:what_to_eat/models/res.dart';
 import 'package:what_to_eat/services/network_service.dart';
 import 'package:what_to_eat/utils/data_extractor.dart';
-
+import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import '../models/tag.dart';
 import '../models/restaurant.dart';
 
@@ -19,16 +20,15 @@ class RestaurantPageState extends State<RestaurantPage> {
   List<Restaurant> restaurants = [];
 
   Future<void> setPlace(String place) async {
-    var result = Restaurant.listFromJson(DataExtractor.extractData(await NetworkService.getRestaurants(place)));
     setState(() {
       selectedPlace = place;
-      restaurants = result;
     });
   }
 
+
   @override
   void initState() {
-    setPlace("전체");
+    setPlace(selectedPlace);
     super.initState();
   }
 
@@ -68,20 +68,69 @@ class RestaurantPageState extends State<RestaurantPage> {
           ],
         ),
         Expanded(
-          child: ListView.builder(
-              itemCount: restaurants.length ~/ 2,
-              itemBuilder: (BuildContext context, int index) {
-                return Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceAround,
-                  children: [
-                    RestaurantCard(context: context, restaurant: restaurants[index * 2]),
-                    RestaurantCard(context: context, restaurant: restaurants[index * 2 + 1]),
-                  ],
-                );
-              }),
+          child: RestaurantListView(key: ValueKey(selectedPlace), selectedPlace: selectedPlace,),
         )
       ],
     );
+  }
+}
+
+class RestaurantListView extends StatefulWidget {
+  const RestaurantListView({super.key, required this.selectedPlace});
+  final String selectedPlace;
+
+  @override
+  State<StatefulWidget> createState() => RestaurantListViewState();
+}
+
+class RestaurantListViewState extends State<RestaurantListView>{
+  static const _pageSize = 10;
+  final PagingController<int, Restaurant> _pagingController = PagingController(firstPageKey: 1);
+
+
+  @override
+  void initState() {
+    _pagingController.addPageRequestListener((pageKey) {
+      _fetchPage(pageKey);
+    });
+    print("intit");
+    Future.sync(() => _pagingController.refresh());
+    super.initState();
+  }
+
+  Future<void> _fetchPage(int pageKey) async {
+    try {
+      final newItems = Restaurant.listFromJson(DataExtractor.extractData(
+          await NetworkService.getRestaurants(widget.selectedPlace, pageKey)));
+      final isLastPage = newItems.length < _pageSize;
+
+      if (isLastPage) {
+        _pagingController.appendLastPage(newItems);
+      } else {
+        final nextPageKey = pageKey + 1;
+        _pagingController.appendPage(newItems, nextPageKey);
+      }
+    } catch (error) {
+      _pagingController.error = error;
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return RefreshIndicator(
+      onRefresh: () => Future.sync(() => _pagingController.refresh()),
+      child: PagedListView(
+          pagingController: _pagingController,
+          builderDelegate: PagedChildBuilderDelegate(
+            itemBuilder: (context, item, index) => RestaurantCard(context: context, restaurant: item as Restaurant)
+          )
+      ),
+    );
+  }
+  @override
+  void dispose() {
+    _pagingController.dispose();
+    super.dispose();
   }
 }
 
