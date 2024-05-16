@@ -128,7 +128,7 @@ class RestaurantListViewState extends State<RestaurantListView>{
           ),
         gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
           crossAxisCount: 2,
-          childAspectRatio: 6/7,
+          childAspectRatio: 13/12,
         ),
       ),
     );
@@ -169,7 +169,7 @@ class RestaurantCard extends StatelessWidget {
               fit: BoxFit.cover,
             ),
             Text(
-              restaurant.name,
+              restaurant.name.length < 13 ? restaurant.name : restaurant.name.substring(0,13),
               style: Theme.of(context)
                   .textTheme
                   .titleMedium
@@ -181,25 +181,34 @@ class RestaurantCard extends StatelessWidget {
               color: Colors.grey,
             ),
             SizedBox(height: 7,),
-            Wrap(
-              direction: Axis.horizontal,
-              alignment: WrapAlignment.start,
-              spacing: 5,
-              runSpacing: 5,
-              children: [
-                for(Tag tag in restaurant.tags)
-                  Container(
-                    padding: EdgeInsets.symmetric(horizontal: 5.0, vertical: 0.5),
-                    decoration: BoxDecoration(
-                        color: Theme.of(context).colorScheme.primary,
-                        border: Border.all(color: Theme.of(context).colorScheme.primary),
-                        borderRadius: BorderRadius.circular(16.0)
-                    ),
-                    child: Text("# ${tag.name}",
-                      style: TextStyle(color: Colors. white),
-                    ),
-                  )
-              ],
+            Container(
+              // height: 50,
+              constraints: BoxConstraints(maxHeight: 55),
+              child: Align(
+                alignment: Alignment.topLeft,
+                child: ClipRect(
+                  child: Wrap(
+                    direction: Axis.horizontal,
+                    alignment: WrapAlignment.start,
+                    spacing: 5,
+                    runSpacing: 5,
+                    children: [
+                      for(Tag tag in restaurant.tags)
+                        Container(
+                          padding: EdgeInsets.symmetric(horizontal: 5.0, vertical: 0.5),
+                          decoration: BoxDecoration(
+                              color: Theme.of(context).colorScheme.primary,
+                              border: Border.all(color: Theme.of(context).colorScheme.primary),
+                              borderRadius: BorderRadius.circular(16.0)
+                          ),
+                          child: Text("# ${tag.name}",
+                            style: TextStyle(color: Colors. white),
+                          ),
+                        )
+                    ],
+                  ),
+                ),
+              ),
             )
           ],
         ));
