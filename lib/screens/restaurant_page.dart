@@ -40,10 +40,8 @@ class RestaurantPageState extends State<RestaurantPage> {
 
   parseTags() async {
     var response = await NetworkService.getTags();
-    print(DataExtractor.extractData(response));
     List<Tag> tagList = Tag.listFromJson(DataExtractor.extractData(response));
     tags = tagList.map((toElement) => toElement.name).toList();
-    // tags.add("value");
     setState(() {
 
     });
@@ -97,7 +95,7 @@ class RestaurantPageState extends State<RestaurantPage> {
         ),
         SizedBox(width: 10, height: 10),
         Row(
-          mainAxisAlignment: MainAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: [
             PlaceButton(buttonName: "전체", searchOption: searchOption, setPlace: setPlace,),
             PlaceButton(buttonName: "건대", searchOption: searchOption, setPlace: setPlace,),
@@ -108,7 +106,7 @@ class RestaurantPageState extends State<RestaurantPage> {
           ],
         ),
         Container(
-          padding: EdgeInsets.all(8.0),
+          padding: EdgeInsets.fromLTRB(8.0, 10.0, 8.0, 8.0),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -126,9 +124,9 @@ class RestaurantPageState extends State<RestaurantPage> {
                 child: ClipRect(
                   child: Wrap(
                     direction: Axis.horizontal,
-                    alignment: WrapAlignment.start,
+                    alignment: WrapAlignment.center,
                     spacing: 10,
-                    runSpacing: 5,
+                    runSpacing: 10,
                     children: [
                       for(String tag in tags)
                         SizedBox(
@@ -407,20 +405,26 @@ class PlaceButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return TextButton(
-      onPressed: () async {
-        print(buttonName);
-        setPlace(buttonName);
-      },
-      style: ButtonStyle(
-          backgroundColor: MaterialStateProperty.all<Color>(
-              searchOption.selectedPlace == buttonName
-                  ? Theme.of(context).colorScheme.primary
-                  : Theme.of(context).colorScheme.background)),
-      child: Text(buttonName,
-          style: searchOption.selectedPlace == buttonName
-              ? TextStyle(color: Colors.white)
-              : TextStyle(color: Colors.black)),
+    return SizedBox(
+      height: 25,
+      width: 50,
+      child: TextButton(
+        onPressed: () async {
+          print(buttonName);
+          setPlace(buttonName);
+        },
+        style: TextButton.styleFrom(
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+            padding: const EdgeInsets.symmetric(vertical: 0, horizontal: 4),
+            backgroundColor: searchOption.selectedPlace == buttonName
+                ? Theme.of(context).colorScheme.primary
+                : Theme.of(context).colorScheme.background
+        ),
+        child: Text(buttonName,
+            style: searchOption.selectedPlace == buttonName
+                ? TextStyle(color: Colors.white)
+                : TextStyle(color: Colors.black)),
+      ),
     );
   }
 }
