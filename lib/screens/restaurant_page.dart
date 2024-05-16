@@ -86,7 +86,8 @@ class RestaurantPageState extends State<RestaurantPage> {
               setState(() {
                 searchOption.isSearch = true;
                 searchOption.searchText = value;
-                searchOption.selectedPlace = "";
+                searchOption.selectedPlace = "전체";
+                searchOption.changeStatus();
               });
             },
             onChanged: (value) {
