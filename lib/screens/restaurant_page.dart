@@ -19,6 +19,15 @@ class RestaurantPageState extends State<RestaurantPage> {
   String selectedPlace = "전체";
   String searchText = "";
   List<Restaurant> restaurants = [];
+  bool _expanded = false;
+
+  List<String> tests = ["asdfg","asdfg","asdfg","asdfg","asdfg","asdfg","asdfg","asdfg","asdfg","asdfg","asdfg","asdfg","asdfg","asdfg","asdfg","asdfg","asdfg","asdfg","asdfg","asdfg","asdfg","asdfg","asdfg","asdfg","asdfg","asdfg","asdfg","asdfg","asdfg","asdfg"];
+
+  void _toggleExpand() {
+    setState(() {
+      _expanded = !_expanded;
+    });
+  }
 
   Future<void> setPlace(String place) async {
     setState(() {
@@ -73,6 +82,65 @@ class RestaurantPageState extends State<RestaurantPage> {
             PlaceButton(buttonName: "강남", searchOption: searchOption, setPlace: setPlace,),
             PlaceButton(buttonName: "신촌", searchOption: searchOption, setPlace: setPlace,),
           ],
+        ),
+        Container(
+          padding: EdgeInsets.all(8.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Align(alignment: Alignment.topLeft, child: Text("# 태그", style: TextStyle(color: Theme.of(context).colorScheme.primary,fontWeight: FontWeight.bold)),),
+              SizedBox(height: 10,),
+              AnimatedContainer(
+                duration: Duration(milliseconds: 300),
+                curve: Curves.easeInOut,
+                constraints: BoxConstraints(maxHeight: _expanded ? 600 : 25),
+                child: ClipRect(
+                  child: Wrap(
+                    direction: Axis.horizontal,
+                    alignment: WrapAlignment.start,
+                    spacing: 10,
+                    runSpacing: 5,
+                    children: [
+                      for(String tag in tests)
+                        Container(
+                          padding: EdgeInsets.symmetric(horizontal: 5.0, vertical: 0.5),
+                          decoration: BoxDecoration(
+                              color: Theme.of(context).colorScheme.background,
+                              border: Border.all(color: Theme.of(context).colorScheme.primary),
+                              borderRadius: BorderRadius.circular(16.0)
+                          ),
+                          child: Text("# ${tag}",
+                            style: TextStyle(color: Colors.black),
+                          ),
+                        )
+                    ],
+                  ),
+                ),
+              )
+            ],
+          ),
+        ),
+        Center(
+          child: Column(
+            children: [
+              Divider(
+                color: Theme.of(context).colorScheme.primary,
+                height: 1,
+                thickness: 2.5,
+                indent: 10,
+                endIndent: 10,
+              ),
+              SizedBox(
+                height: 20,
+                child: IconButton(
+                  padding: EdgeInsets.zero, // 패딩 설정
+                  constraints: BoxConstraints(),
+                  onPressed: _toggleExpand,
+                  icon: _expanded ? Icon(Icons.arrow_drop_up, color: Theme.of(context).colorScheme.primary,) : Icon(Icons.arrow_drop_down, color: Theme.of(context).colorScheme.primary,),
+                ),
+              ),
+            ],
+          ),
         ),
         Expanded(
           child: RestaurantListView(key: ValueKey(searchOption.getChange()), searchOption: searchOption,),
