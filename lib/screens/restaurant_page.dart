@@ -102,15 +102,17 @@ class RestaurantPageState extends State<RestaurantPage> {
                     runSpacing: 5,
                     children: [
                       for(String tag in tests)
-                        Container(
-                          padding: EdgeInsets.symmetric(horizontal: 5.0, vertical: 0.5),
-                          decoration: BoxDecoration(
-                              color: Theme.of(context).colorScheme.background,
-                              border: Border.all(color: Theme.of(context).colorScheme.primary),
-                              borderRadius: BorderRadius.circular(16.0)
-                          ),
-                          child: Text("# ${tag}",
-                            style: TextStyle(color: Colors.black),
+                        SizedBox(
+                          height : 25,
+                          child: TextButton(
+                            style: TextButton.styleFrom(
+                                padding: const EdgeInsets.all(0.0),
+                                side: BorderSide(color: Colors.grey),
+                            ),
+                            onPressed: () {  },
+                            child: Text("# ${tag}",
+                              style: TextStyle(color: Colors.black),
+                            ),
                           ),
                         )
                     ],
