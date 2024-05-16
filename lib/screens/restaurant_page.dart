@@ -222,7 +222,9 @@ class RestaurantPageState extends State<RestaurantPage> {
           ),
         ),
         Expanded(
-          child: RestaurantListView(key: ValueKey(searchOption.getChange()), searchOption: searchOption,),
+          child: Container(
+              child: RestaurantListView(key: ValueKey(searchOption.getChange()), searchOption: searchOption,)
+          ),
         )
       ],
     );
@@ -290,7 +292,7 @@ class RestaurantListViewState extends State<RestaurantListView>{
           ),
         gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
           crossAxisCount: 2,
-          childAspectRatio: 13/12,
+          childAspectRatio: 11.4/12,
         ),
       ),
     );
@@ -319,7 +321,7 @@ class RestaurantCard extends StatelessWidget {
         padding: EdgeInsets.symmetric(vertical: 5, horizontal: 5),
         margin: EdgeInsets.only(top: 10.0),
         decoration: BoxDecoration(
-            border: Border.all(color: Colors.black),
+            border: Border.all(color: Colors.grey),
             borderRadius: BorderRadius.circular(8.0)
         ),
         child: Column(
@@ -327,16 +329,21 @@ class RestaurantCard extends StatelessWidget {
             Image.network(
               restaurant.thumbnail,
               width: 180,
-              height: 70,
+              height: 80,
               fit: BoxFit.cover,
             ),
-            Text(
-              restaurant.name.length < 13 ? restaurant.name : restaurant.name.substring(0,13),
-              style: Theme.of(context)
-                  .textTheme
-                  .titleMedium
-                  ?.copyWith(color: Colors.black),
-              textAlign: TextAlign.left,
+            Align(
+              alignment: Alignment.topLeft,
+              child: Padding(
+                padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 0),
+                child: Text(
+                  restaurant.name,
+                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+                  textAlign: TextAlign.left,
+                  overflow: TextOverflow.ellipsis,
+                    maxLines: 1,
+                ),
+              ),
             ),
             Divider(
               height: 1,
