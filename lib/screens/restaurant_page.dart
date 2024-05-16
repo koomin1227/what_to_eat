@@ -68,7 +68,7 @@ class RestaurantPageState extends State<RestaurantPage> {
                   FocusScope.of(context).unfocus();
                   setState(() {
                     searchOption.isSearch = true;
-                    searchOption.selectedPlace = "";
+                    searchOption.selectedPlace = "전체";
                     searchOption.changeStatus();
                   });
                 },
@@ -255,7 +255,7 @@ class RestaurantListViewState extends State<RestaurantListView>{
             await NetworkService.getRestaurantsBySearch(widget.searchOption.searchText!, pageKey)));
       } else {
         newItems = Restaurant.listFromJson(DataExtractor.extractData(
-            await NetworkService.getRestaurants(widget.searchOption.selectedPlace!, pageKey)));
+            await NetworkService.getRestaurants(widget.searchOption.selectedPlace!, widget.searchOption.selectedTags, pageKey)));
       }
 
       final isLastPage = newItems.length < _pageSize;
