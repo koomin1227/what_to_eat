@@ -34,6 +34,7 @@ class RestaurantPageState extends State<RestaurantPage> {
     setState(() {
       searchOption.selectedPlace = place;
       searchOption.isSearch= false;
+      searchOption.changeStatus();
     });
   }
 
@@ -68,6 +69,7 @@ class RestaurantPageState extends State<RestaurantPage> {
                   setState(() {
                     searchOption.isSearch = true;
                     searchOption.selectedPlace = "";
+                    searchOption.changeStatus();
                   });
                 },
                 icon: Icon(Icons.search))
@@ -118,20 +120,20 @@ class RestaurantPageState extends State<RestaurantPage> {
                           height : 25,
                           child: TextButton(
                             style: TextButton.styleFrom(
-                              backgroundColor: selectedTags.contains(tag)? Theme.of(context).colorScheme.primary : Theme.of(context).colorScheme.background,
+                              backgroundColor: searchOption.selectedTags.contains(tag)? Theme.of(context).colorScheme.primary : Theme.of(context).colorScheme.background,
                                 padding: const EdgeInsets.symmetric(vertical: 0, horizontal: 4),
-                                side: BorderSide(color: selectedTags.contains(tag)? Theme.of(context).colorScheme.primary : Colors.grey),
+                                side: BorderSide(color: searchOption.selectedTags.contains(tag)? Theme.of(context).colorScheme.primary : Colors.grey),
                             ),
                             onPressed: () {
-                              if (selectedTags.contains(tag)) {
-                                selectedTags.remove(tag);
+                              if (searchOption.selectedTags.contains(tag)) {
+                                searchOption.selectedTags.remove(tag);
                               } else {
-                                selectedTags.add(tag);
+                                searchOption.selectedTags.add(tag);
                               }
                               setState(() {});
                             },
                             child: Text("# ${tag}",
-                              style: TextStyle(color: selectedTags.contains(tag)? Theme.of(context).colorScheme.background : Colors.black),
+                              style: TextStyle(color: searchOption.selectedTags.contains(tag)? Theme.of(context).colorScheme.background : Colors.black),
                             ),
                           ),
                         ),
@@ -150,7 +152,7 @@ class RestaurantPageState extends State<RestaurantPage> {
                                 ),
                                 onPressed: () {
                                   setState(() {
-                                    selectedTags.clear();
+                                    searchOption.selectedTags.clear();
                                   });
                                 },
                                 child: Text(
@@ -170,6 +172,10 @@ class RestaurantPageState extends State<RestaurantPage> {
                                 backgroundColor: Theme.of(context).colorScheme.primary
                               ),
                                 onPressed: () {
+                                  setState(() {
+                                    searchOption.isSearch = false;
+                                    searchOption.changeStatus();
+                                  });
                                   _toggleExpand();
                                 },
                                 child: Text(
@@ -401,10 +407,16 @@ class SearchOption {
   bool isSearch;
   String? selectedPlace;
   String? searchText;
+  List<String> selectedTags = [];
+  bool change = true;
 
   SearchOption(this.isSearch, {this.selectedPlace, this.searchText});
 
-  String getChange() {
-    return (selectedPlace.hashCode + searchText.hashCode).toString();
+  void changeStatus() {
+    change = change? false:true;
+  }
+
+  bool getChange() {
+    return change;
   }
 }
