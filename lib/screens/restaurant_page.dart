@@ -93,7 +93,6 @@ class RestaurantListViewState extends State<RestaurantListView>{
     _pagingController.addPageRequestListener((pageKey) {
       _fetchPage(pageKey);
     });
-    print("intit");
     Future.sync(() => _pagingController.refresh());
     super.initState();
   }
@@ -119,11 +118,18 @@ class RestaurantListViewState extends State<RestaurantListView>{
   Widget build(BuildContext context) {
     return RefreshIndicator(
       onRefresh: () => Future.sync(() => _pagingController.refresh()),
-      child: PagedListView(
+      child: PagedGridView(
           pagingController: _pagingController,
           builderDelegate: PagedChildBuilderDelegate(
-            itemBuilder: (context, item, index) => RestaurantCard(context: context, restaurant: item as Restaurant)
-          )
+            itemBuilder: (context, item, index) => Padding(
+              padding: const EdgeInsets.symmetric(vertical: 0, horizontal: 4),
+              child: RestaurantCard(context: context, restaurant: item as Restaurant),
+            )
+          ),
+        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+          crossAxisCount: 2,
+          childAspectRatio: 6/7,
+        ),
       ),
     );
   }
