@@ -21,7 +21,8 @@ class RestaurantPageState extends State<RestaurantPage> {
   List<Restaurant> restaurants = [];
   bool _expanded = false;
 
-  List<String> tests = ["asdfg","asdfg","asdfg","asdfg","asdfg","asdfg","asdfg","asdfg","asdfg","asdfg","asdfg","asdfg","asdfg","asdfg","asdfg","asdfg","asdfg","asdfg","asdfg","asdfg","asdfg","asdfg","asdfg","asdfg","asdfg","asdfg","asdfg","asdfg","asdfg","asdfg"];
+  List<String> tags = [];
+  List<String> selectedTags = [];
 
   void _toggleExpand() {
     setState(() {
@@ -36,10 +37,21 @@ class RestaurantPageState extends State<RestaurantPage> {
     });
   }
 
+  parseTags() async {
+    var response = await NetworkService.getTags();
+    print(DataExtractor.extractData(response));
+    List<Tag> tagList = Tag.listFromJson(DataExtractor.extractData(response));
+    tags = tagList.map((toElement) => toElement.name).toList();
+    tags.forEach((action) => print(action));
+    setState(() {
+
+    });
+  }
 
   @override
-  void initState() {
+  void initState()  {
     setPlace("전체");
+    parseTags();
     super.initState();
   }
 
@@ -101,17 +113,25 @@ class RestaurantPageState extends State<RestaurantPage> {
                     spacing: 10,
                     runSpacing: 5,
                     children: [
-                      for(String tag in tests)
+                      for(String tag in tags)
                         SizedBox(
                           height : 25,
                           child: TextButton(
                             style: TextButton.styleFrom(
-                                padding: const EdgeInsets.all(0.0),
-                                side: BorderSide(color: Colors.grey),
+                              backgroundColor: selectedTags.contains(tag)? Theme.of(context).colorScheme.primary : Theme.of(context).colorScheme.background,
+                                padding: const EdgeInsets.symmetric(vertical: 0, horizontal: 4),
+                                side: BorderSide(color: selectedTags.contains(tag)? Theme.of(context).colorScheme.primary : Colors.grey),
                             ),
-                            onPressed: () {  },
+                            onPressed: () {
+                              if (selectedTags.contains(tag)) {
+                                selectedTags.remove(tag);
+                              } else {
+                                selectedTags.add(tag);
+                              }
+                              setState(() {});
+                            },
                             child: Text("# ${tag}",
-                              style: TextStyle(color: Colors.black),
+                              style: TextStyle(color: selectedTags.contains(tag)? Theme.of(context).colorScheme.background : Colors.black),
                             ),
                           ),
                         )
