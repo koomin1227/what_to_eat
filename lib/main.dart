@@ -41,8 +41,18 @@ class _MyHomePageState extends State<MyHomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Theme.of(context).colorScheme.background,
-        title: Text("뭐먹을까"),
+        toolbarHeight: 10,
+        backgroundColor: Theme.of(context).colorScheme.primary,
+        // title: Text("뭐먹을까"),
+        // flexibleSpace: Container(
+        //   decoration: BoxDecoration(
+        //     gradient: LinearGradient(
+        //       begin: Alignment.topCenter,
+        //         end: Alignment.bottomCenter,
+        //         colors: <Color>[Theme.of(context).colorScheme.primary, Colors.white]
+        //     )
+        //   ),
+        // ),
       ),
       body: pages[_selectedIndex],
       bottomNavigationBar: BottomNavigationBar(

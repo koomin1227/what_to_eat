@@ -61,29 +61,38 @@ class RestaurantPageState extends State<RestaurantPage> {
     // TODO: implement build
     return Column(
       children: [
-        SearchBar(
-          trailing: [
-            IconButton(
-                onPressed: () {
-                  FocusScope.of(context).unfocus();
-                  setState(() {
-                    searchOption.isSearch = true;
-                    searchOption.selectedPlace = "전체";
-                    searchOption.changeStatus();
-                  });
-                },
-                icon: Icon(Icons.search))
-          ],
-          onSubmitted: (value) {
-            setState(() {
-              searchOption.isSearch = true;
+        Container(
+          decoration: BoxDecoration(
+              gradient: LinearGradient(
+                begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
+                  colors: <Color>[Theme.of(context).colorScheme.primary, Colors.white]
+              )
+            ),
+          child: SearchBar(
+            trailing: [
+              IconButton(
+                  onPressed: () {
+                    FocusScope.of(context).unfocus();
+                    setState(() {
+                      searchOption.isSearch = true;
+                      searchOption.selectedPlace = "전체";
+                      searchOption.changeStatus();
+                    });
+                  },
+                  icon: Icon(Icons.search))
+            ],
+            onSubmitted: (value) {
+              setState(() {
+                searchOption.isSearch = true;
+                searchOption.searchText = value;
+                searchOption.selectedPlace = "";
+              });
+            },
+            onChanged: (value) {
               searchOption.searchText = value;
-              searchOption.selectedPlace = "";
-            });
-          },
-          onChanged: (value) {
-            searchOption.searchText = value;
-          },
+            },
+          ),
         ),
         SizedBox(width: 10, height: 10),
         Row(
