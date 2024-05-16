@@ -15,6 +15,11 @@ class NetworkService {
     return http.get(url);
   }
 
+  static getTags() {
+    var url = Uri.parse("$baseURL/tags");
+    return http.get(url);
+  }
+
   static Map<String, dynamic> makeQueryOptions(String place, int page) {
     Map<String, dynamic> query = {};
     if (place != "전체") {
