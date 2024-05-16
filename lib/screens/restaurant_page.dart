@@ -42,7 +42,7 @@ class RestaurantPageState extends State<RestaurantPage> {
     print(DataExtractor.extractData(response));
     List<Tag> tagList = Tag.listFromJson(DataExtractor.extractData(response));
     tags = tagList.map((toElement) => toElement.name).toList();
-    tags.forEach((action) => print(action));
+    // tags.add("value");
     setState(() {
 
     });
@@ -134,7 +134,53 @@ class RestaurantPageState extends State<RestaurantPage> {
                               style: TextStyle(color: selectedTags.contains(tag)? Theme.of(context).colorScheme.background : Colors.black),
                             ),
                           ),
-                        )
+                        ),
+                      SizedBox(height: 10,),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceAround,
+                        children: [
+                          SizedBox(
+                            width: 160,
+                            height: 35,
+                            child: TextButton(
+                                style: TextButton.styleFrom(
+                                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8), side: BorderSide(color: Colors.grey)),
+                                    padding: const EdgeInsets.symmetric(vertical: 0, horizontal: 4),
+                                    backgroundColor: Theme.of(context).colorScheme.background
+                                ),
+                                onPressed: () {
+                                  setState(() {
+                                    selectedTags.clear();
+                                  });
+                                },
+                                child: Text(
+                                  "초기화",
+                                  style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold, fontSize: 15),
+                                )
+                            ),
+                          ),
+                          // SizedBox(width: 10,),
+                          SizedBox(
+                            width: 160,
+                            height: 35,
+                            child: TextButton(
+                              style: TextButton.styleFrom(
+                                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                                padding: const EdgeInsets.symmetric(vertical: 0, horizontal: 4),
+                                backgroundColor: Theme.of(context).colorScheme.primary
+                              ),
+                                onPressed: () {
+                                  _toggleExpand();
+                                },
+                                child: Text(
+                                  "결과보기",
+                                  style: TextStyle(color: Theme.of(context).colorScheme.background, fontWeight: FontWeight.bold,fontSize: 15),
+                                )
+                            ),
+                          ),
+                        ],
+                      ),
+                      SizedBox(height: 8,),
                     ],
                   ),
                 ),
