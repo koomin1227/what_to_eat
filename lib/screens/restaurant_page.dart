@@ -15,20 +15,22 @@ class RestaurantPage extends StatefulWidget {
 }
 
 class RestaurantPageState extends State<RestaurantPage> {
+  SearchOption searchOption = SearchOption(false, selectedPlace: "전체", searchText: "");
   String selectedPlace = "전체";
   String searchText = "";
   List<Restaurant> restaurants = [];
 
   Future<void> setPlace(String place) async {
     setState(() {
-      selectedPlace = place;
+      searchOption.selectedPlace = place;
+      searchOption.isSearch= false;
     });
   }
 
 
   @override
   void initState() {
-    setPlace(selectedPlace);
+    setPlace("전체");
     super.initState();
   }
 
@@ -41,34 +43,39 @@ class RestaurantPageState extends State<RestaurantPage> {
           trailing: [
             IconButton(
                 onPressed: () {
-                  setState(() {});
+                  FocusScope.of(context).unfocus();
+                  setState(() {
+                    searchOption.isSearch = true;
+                    searchOption.selectedPlace = "";
+                  });
                 },
                 icon: Icon(Icons.search))
           ],
           onSubmitted: (value) {
             setState(() {
-              searchText = value;
+              searchOption.isSearch = true;
+              searchOption.searchText = value;
+              searchOption.selectedPlace = "";
             });
           },
           onChanged: (value) {
-            searchText = value;
+            searchOption.searchText = value;
           },
         ),
         SizedBox(width: 10, height: 10),
-        Text(searchText),
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            PlaceButton(buttonName: "전체", selectedPlace: selectedPlace, setPlace: setPlace,),
-            PlaceButton(buttonName: "건대", selectedPlace: selectedPlace, setPlace: setPlace,),
-            PlaceButton(buttonName: "홍대", selectedPlace: selectedPlace, setPlace: setPlace,),
-            PlaceButton(buttonName: "잠실", selectedPlace: selectedPlace, setPlace: setPlace,),
-            PlaceButton(buttonName: "강남", selectedPlace: selectedPlace, setPlace: setPlace,),
-            PlaceButton(buttonName: "신촌", selectedPlace: selectedPlace, setPlace: setPlace,),
+            PlaceButton(buttonName: "전체", searchOption: searchOption, setPlace: setPlace,),
+            PlaceButton(buttonName: "건대", searchOption: searchOption, setPlace: setPlace,),
+            PlaceButton(buttonName: "홍대", searchOption: searchOption, setPlace: setPlace,),
+            PlaceButton(buttonName: "잠실", searchOption: searchOption, setPlace: setPlace,),
+            PlaceButton(buttonName: "강남", searchOption: searchOption, setPlace: setPlace,),
+            PlaceButton(buttonName: "신촌", searchOption: searchOption, setPlace: setPlace,),
           ],
         ),
         Expanded(
-          child: RestaurantListView(key: ValueKey(selectedPlace), selectedPlace: selectedPlace,),
+          child: RestaurantListView(key: ValueKey(searchOption.getChange()), searchOption: searchOption,),
         )
       ],
     );
@@ -76,8 +83,9 @@ class RestaurantPageState extends State<RestaurantPage> {
 }
 
 class RestaurantListView extends StatefulWidget {
-  const RestaurantListView({super.key, required this.selectedPlace});
-  final String selectedPlace;
+  const RestaurantListView({super.key, required this.searchOption});
+  // final String selectedPlace;
+  final SearchOption searchOption;
 
   @override
   State<StatefulWidget> createState() => RestaurantListViewState();
@@ -99,8 +107,15 @@ class RestaurantListViewState extends State<RestaurantListView>{
 
   Future<void> _fetchPage(int pageKey) async {
     try {
-      final newItems = Restaurant.listFromJson(DataExtractor.extractData(
-          await NetworkService.getRestaurants(widget.selectedPlace, pageKey)));
+      var newItems;
+      if (widget.searchOption.isSearch) {
+        newItems = Restaurant.listFromJson(DataExtractor.extractData(
+            await NetworkService.getRestaurantsBySearch(widget.searchOption.searchText!, pageKey)));
+      } else {
+        newItems = Restaurant.listFromJson(DataExtractor.extractData(
+            await NetworkService.getRestaurants(widget.searchOption.selectedPlace!, pageKey)));
+      }
+
       final isLastPage = newItems.length < _pageSize;
 
       if (isLastPage) {
@@ -220,10 +235,10 @@ class PlaceButton extends StatelessWidget {
     super.key,
     required this.buttonName,
     required this.setPlace,
-    required this.selectedPlace,
+    required this.searchOption,
   });
   final Function setPlace;
-  final String selectedPlace;
+  final SearchOption searchOption;
   final String buttonName;
 
   @override
@@ -235,13 +250,25 @@ class PlaceButton extends StatelessWidget {
       },
       style: ButtonStyle(
           backgroundColor: MaterialStateProperty.all<Color>(
-              selectedPlace == buttonName
+              searchOption.selectedPlace == buttonName
                   ? Theme.of(context).colorScheme.primary
                   : Theme.of(context).colorScheme.background)),
       child: Text(buttonName,
-          style: selectedPlace == buttonName
+          style: searchOption.selectedPlace == buttonName
               ? TextStyle(color: Colors.white)
               : TextStyle(color: Colors.black)),
     );
+  }
+}
+
+class SearchOption {
+  bool isSearch;
+  String? selectedPlace;
+  String? searchText;
+
+  SearchOption(this.isSearch, {this.selectedPlace, this.searchText});
+
+  String getChange() {
+    return (selectedPlace.hashCode + searchText.hashCode).toString();
   }
 }
