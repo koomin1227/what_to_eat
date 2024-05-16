@@ -102,8 +102,13 @@ class RestaurantPageState extends State<RestaurantPage> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Align(alignment: Alignment.topLeft, child: Text("# 태그", style: TextStyle(color: Theme.of(context).colorScheme.primary,fontWeight: FontWeight.bold)),),
-              SizedBox(height: 10,),
+              if (_expanded)
+                Column(
+                  children: [
+                    Align(alignment: Alignment.topLeft, child: Text("# 태그", style: TextStyle(color: Theme.of(context).colorScheme.primary,fontWeight: FontWeight.bold)),),
+                    SizedBox(height: 10,),
+                  ],
+                ),
               AnimatedContainer(
                 duration: Duration(milliseconds: 300),
                 curve: Curves.easeInOut,
