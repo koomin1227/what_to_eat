@@ -4,7 +4,10 @@ import 'package:flutter/material.dart';
 class RestaurantDetailPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return Scaffold(body: Text("hello"));
+    return Scaffold(
+        appBar: AppBar(),
+        body: Text("hello")
+    );
   }
 
 }
