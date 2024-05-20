@@ -15,6 +15,11 @@ class NetworkService {
     return http.get(url);
   }
 
+  static getRestaurantDetail(String restaurantId) {
+    var url = Uri.parse("$baseURL/restaurants/$restaurantId");
+    return http.get(url);
+  }
+
   static getTags() {
     var url = Uri.parse("$baseURL/tags");
     return http.get(url);
