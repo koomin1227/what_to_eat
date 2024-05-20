@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:what_to_eat/services/network_service.dart';
 import 'package:what_to_eat/utils/data_extractor.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
+import 'package:what_to_eat/widgets/common/tag_widget.dart';
 import '../models/tag.dart';
 import '../models/restaurant.dart';
 import 'restaurant_detail_screen.dart';
@@ -376,17 +377,7 @@ class RestaurantCard extends StatelessWidget {
                       runSpacing: 5,
                       children: [
                         for(Tag tag in restaurant.tags)
-                          Container(
-                            padding: EdgeInsets.symmetric(horizontal: 5.0, vertical: 0.5),
-                            decoration: BoxDecoration(
-                                color: Theme.of(context).colorScheme.primary,
-                                border: Border.all(color: Theme.of(context).colorScheme.primary),
-                                borderRadius: BorderRadius.circular(16.0)
-                            ),
-                            child: Text("# ${tag.name}",
-                              style: TextStyle(color: Colors. white),
-                            ),
-                          )
+                          TagWidget(tag: tag, size: 15)
                       ],
                     ),
                   ),

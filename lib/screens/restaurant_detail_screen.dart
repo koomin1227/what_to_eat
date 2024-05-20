@@ -5,7 +5,11 @@ import 'package:what_to_eat/services/network_service.dart';
 import 'package:what_to_eat/utils/data_extractor.dart';
 
 import '../models/restaurantDetail.dart';
-import '../models/tag.dart';
+import '../widgets/restaurant_detail_screen/action_buttons_widget.dart';
+import '../widgets/restaurant_detail_screen/restaurant_detail_info.dart';
+import '../widgets/restaurant_detail_screen/restaurant_header_widget.dart';
+import '../widgets/restaurant_detail_screen/restaurant_main_image_widget.dart';
+import '../widgets/restaurant_detail_screen/reviews_widget.dart';
 
 class RestaurantDetailScreen extends StatefulWidget {
   final String restaurantId;
@@ -62,10 +66,18 @@ class _RestaurantDetailScreenState extends State<RestaurantDetailScreen>
                   ),
                   backgroundColor: Theme.of(context).colorScheme.primary,
                   flexibleSpace: LayoutBuilder(
-                    builder: (BuildContext context, BoxConstraints constraints) {
+                    builder:
+                        (BuildContext context, BoxConstraints constraints) {
                       var top = constraints.biggest.height;
                       return FlexibleSpaceBar(
-                        title: top <= 120 ? Text(restaurant.name, style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),) : null,
+                        title: top <= 120
+                            ? Text(
+                                restaurant.name,
+                                style: TextStyle(
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.bold),
+                              )
+                            : null,
                         background: RestaurantMainImage(restaurant: restaurant),
                         collapseMode: CollapseMode.parallax,
                       );
@@ -80,12 +92,14 @@ class _RestaurantDetailScreenState extends State<RestaurantDetailScreen>
                         padding: EdgeInsets.all(15),
                         child: Column(
                           children: [
-                            Title(restaurant: restaurant),
+                            RestaurantHeader(restaurant: restaurant),
                             Divider(thickness: 0.5),
-                            DetailInfo(restaurant: restaurant),
+                            RestaurantDetailInfo(restaurant: restaurant),
                             ActionButtons(),
                             Divider(thickness: 0.5),
-                            Reviews(reviews: restaurant.reviews,),
+                            Reviews(
+                              reviews: restaurant.reviews,
+                            ),
                           ],
                         ),
                       ),
@@ -103,301 +117,7 @@ class _RestaurantDetailScreenState extends State<RestaurantDetailScreen>
   }
 }
 
-class RestaurantMainImage extends StatelessWidget {
-  const RestaurantMainImage({
-    super.key,
-    required this.restaurant,
-  });
-
-  final RestaurantDetail restaurant;
-
-  @override
-  Widget build(BuildContext context) {
-    return LayoutBuilder(
-      builder:
-          (BuildContext context, BoxConstraints constraints) {
-        double width = constraints.maxWidth *
-            0.8; // Image width is 80% of the available width
-        double aspectRatio = 345 / 250; // Original aspect ratio
-        return AspectRatio(
-          aspectRatio: aspectRatio,
-          child: Image.network(
-            restaurant.thumbnail,
-            width: width,
-            fit: BoxFit.cover,
-          ),
-        );
-      },
-    );
-  }
-}
-
-class Reviews extends StatelessWidget {
-  final List<String> reviews;
-  const Reviews({
-    super.key, required this.reviews,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      children: [
-        Align(
-            alignment: Alignment.topLeft,
-            child: Text(
-              "리뷰",
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-            )
-        ),
-        if (reviews.isNotEmpty)
-          for(String review in reviews)
-            Review(contents: review)
-        else
-          Padding(
-            padding: const EdgeInsets.all(30.0),
-            child: Text("리뷰가 없습니다.", style: TextStyle(color: Colors.grey),),
-          )
-      ],
-    );
-  }
-}
-
-class Review extends StatelessWidget {
-  final String contents;
-  const Review({
-    super.key, required this.contents,
-  });
-
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: EdgeInsets.all(10),
-      child: Column(
-        children: [
-          Align(alignment: Alignment.topLeft, child: Text("rry****", style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),)),
-          SizedBox(height: 10,),
-          Align(alignment: Alignment.topLeft, child: Text(contents)),
-          Divider(),
-        ],
-      ),
-    );
-  }
-}
-
-class ActionButtons extends StatelessWidget {
-  const ActionButtons({
-    super.key,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return IntrinsicHeight(
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-        children: [
-          TextButton(
-              onPressed: () {},
-              child: Row(
-                children: [
-                  Text("지도",
-                      style:
-                          TextStyle(fontSize: 18, fontWeight: FontWeight.bold))
-                ],
-              )),
-          VerticalDivider(
-            indent: 8,
-            endIndent: 8,
-            thickness: 0.5,
-          ),
-          TextButton(
-              onPressed: () {},
-              child: Row(
-                children: [
-                  Icon(Icons.ios_share_outlined),
-                  SizedBox(
-                    width: 5,
-                  ),
-                  Text("공유",
-                      style:
-                          TextStyle(fontSize: 18, fontWeight: FontWeight.bold))
-                ],
-              )),
-        ],
-      ),
-    );
-  }
-}
-
-class DetailInfo extends StatelessWidget {
-  const DetailInfo({
-    super.key,
-    required this.restaurant,
-  });
-
-  final RestaurantDetail restaurant;
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: EdgeInsets.symmetric(vertical: 10, horizontal: 0),
-      child: Column(
-        children: [
-          TagList(restaurant: restaurant),
-          SizedBox(
-            height: 10,
-          ),
-          Info(
-            kind: InfoKind.address,
-            info: "경기 남양주시 화도읍 비룡로 145 1층",
-          ),
-          SizedBox(
-            height: 10,
-          ),
-          Info(
-            kind: InfoKind.phoneNumber,
-            info: "031-511-9226",
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class Title extends StatelessWidget {
-  const Title({
-    super.key,
-    required this.restaurant,
-  });
-
-  final RestaurantDetail restaurant;
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      child: Column(
-        children: [
-          Align(
-            alignment: Alignment.topLeft,
-            child: Text(
-              restaurant.name,
-              style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
-            ),
-          ),
-          Row(
-            children: [
-              Rating(),
-              SizedBox(
-                width: 10,
-              ),
-              Text(
-                '리뷰 157개',
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-              )
-            ],
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class TagList extends StatelessWidget {
-  const TagList({
-    super.key,
-    required this.restaurant,
-  });
-
-  final RestaurantDetail restaurant;
-
-  @override
-  Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      scrollDirection: Axis.horizontal,
-      child: Wrap(
-        spacing: 10,
-        // mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          for (Tag tag in restaurant.tags)
-            Container(
-              padding: EdgeInsets.symmetric(horizontal: 5.0, vertical: 0.5),
-              decoration: BoxDecoration(
-                  color: Theme.of(context).colorScheme.primary,
-                  border:
-                      Border.all(color: Theme.of(context).colorScheme.primary),
-                  borderRadius: BorderRadius.circular(16.0)),
-              child: Text(
-                "# ${tag.name}",
-                style: TextStyle(color: Colors.white, fontSize: 20),
-              ),
-            ),
-        ],
-      ),
-    );
-  }
-}
-
-class Info extends StatelessWidget {
-  final String kind;
-  final String info;
-
-  const Info({
-    super.key,
-    required this.kind,
-    required this.info,
-  });
-
-  getIcon(String kind) {
-    if (kind == InfoKind.address) {
-      return Icons.place;
-    } else if (kind == InfoKind.phoneNumber) {
-      return Icons.phone_iphone;
-    }
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      children: [
-        Icon(
-          getIcon(kind),
-          color: Colors.grey,
-        ),
-        SizedBox(
-          width: 10,
-        ),
-        Text(
-          info,
-          style: TextStyle(fontSize: 18, fontWeight: FontWeight.normal),
-        ),
-      ],
-    );
-  }
-}
-
-class Rating extends StatelessWidget {
-  const Rating({
-    super.key,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      children: [
-        Icon(
-          Icons.star,
-          color: Colors.yellow.shade600,
-        ),
-        Text(
-          "4.9",
-          style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-        ),
-      ],
-    );
-  }
-}
-
 class InfoKind {
-  static String address = "address";
-  static String phoneNumber = "phoneNumber";
+  static IconData address = Icons.place;
+  static IconData phoneNumber = Icons.phone_iphone;
 }
