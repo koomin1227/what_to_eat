@@ -14,12 +14,18 @@ class RestaurantDetail extends Restaurant {
 
   factory RestaurantDetail.fromJson(Map<String, dynamic> json) {
     return RestaurantDetail(
-      reviews: List<String>.from(json['reviews'] ?? []),
+      reviews: List<String>.from(parseReview(json['reviews'])),
       name: json['name'],
       thumbnail: json['thumbnail'] ?? '',
       restaurantId: json['restaurantId'],
       tags: Tag.listFromJsonList(json['tags']),
 
     );
+  }
+
+  static parseReview(List<dynamic> json) {
+    return json.map((element) {
+      return element["review"];
+    }).toList();
   }
 }
