@@ -53,37 +53,44 @@ class _RestaurantDetailPageState extends State<RestaurantDetailPage>
             return Text('Error: ${snapshot.error}');
           } else if (snapshot.hasData) {
             var restaurant = snapshot.data!;
-            return Column(
-              children: [
-                LayoutBuilder(
-                  builder: (BuildContext context, BoxConstraints constraints) {
-                    double width = constraints.maxWidth *
-                        0.8; // Image width is 80% of the available width
-                    double aspectRatio = 345 / 222; // Original aspect ratio
-                    return AspectRatio(
-                      aspectRatio: aspectRatio,
-                      child: Image.network(
-                        restaurant.thumbnail,
-                        width: width,
-                        fit: BoxFit.cover,
-                      ),
-                    );
-                  },
-                ),
-                Container(
-                  padding: EdgeInsets.all(15),
-                  child: Column(
-                    children: [
-                      Title(restaurant: restaurant),
-                      Divider(thickness: 0.5,),
-                      DetailInfo(restaurant: restaurant),
-                      ActionButtons(),
-                      Divider(thickness: 0.5,),
-                      Reviews(),
-                    ],
+            return SingleChildScrollView(
+              child: Column(
+                children: [
+                  LayoutBuilder(
+                    builder:
+                        (BuildContext context, BoxConstraints constraints) {
+                      double width = constraints.maxWidth *
+                          0.8; // Image width is 80% of the available width
+                      double aspectRatio = 345 / 222; // Original aspect ratio
+                      return AspectRatio(
+                        aspectRatio: aspectRatio,
+                        child: Image.network(
+                          restaurant.thumbnail,
+                          width: width,
+                          fit: BoxFit.cover,
+                        ),
+                      );
+                    },
                   ),
-                ),
-              ],
+                  Container(
+                    padding: EdgeInsets.all(15),
+                    child: Column(
+                      children: [
+                        Title(restaurant: restaurant),
+                        Divider(
+                          thickness: 0.5,
+                        ),
+                        DetailInfo(restaurant: restaurant),
+                        ActionButtons(),
+                        Divider(
+                          thickness: 0.5,
+                        ),
+                        Reviews(reviews: restaurant.reviews,),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
             );
           } else {
             return Text('No data');
@@ -95,14 +102,54 @@ class _RestaurantDetailPageState extends State<RestaurantDetailPage>
 }
 
 class Reviews extends StatelessWidget {
+  final List<String> reviews;
   const Reviews({
-    super.key,
+    super.key, required this.reviews,
   });
 
   @override
   Widget build(BuildContext context) {
     return Column(
-      children: [Align(alignment: Alignment.topLeft, child: Text("리뷰",  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),))],
+      children: [
+        Align(
+            alignment: Alignment.topLeft,
+            child: Text(
+              "리뷰",
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+            )
+        ),
+        if (reviews.isNotEmpty)
+          for(String review in reviews)
+            Review(contents: review)
+        else
+          Padding(
+            padding: const EdgeInsets.all(30.0),
+            child: Text("리뷰가 없습니다.", style: TextStyle(color: Colors.grey),),
+          )
+      ],
+    );
+  }
+}
+
+class Review extends StatelessWidget {
+  final String contents;
+  const Review({
+    super.key, required this.contents,
+  });
+
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: EdgeInsets.all(10),
+      child: Column(
+        children: [
+          Align(alignment: Alignment.topLeft, child: Text("rry****", style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),)),
+          SizedBox(height: 10,),
+          Align(alignment: Alignment.topLeft, child: Text(contents)),
+          Divider(),
+        ],
+      ),
     );
   }
 }
@@ -123,8 +170,8 @@ class ActionButtons extends StatelessWidget {
               child: Row(
                 children: [
                   Text("지도",
-                      style: TextStyle(
-                          fontSize: 18, fontWeight: FontWeight.bold))
+                      style:
+                          TextStyle(fontSize: 18, fontWeight: FontWeight.bold))
                 ],
               )),
           VerticalDivider(
@@ -141,8 +188,8 @@ class ActionButtons extends StatelessWidget {
                     width: 5,
                   ),
                   Text("공유",
-                      style: TextStyle(
-                          fontSize: 18, fontWeight: FontWeight.bold))
+                      style:
+                          TextStyle(fontSize: 18, fontWeight: FontWeight.bold))
                 ],
               )),
         ],
