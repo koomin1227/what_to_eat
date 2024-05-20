@@ -16,7 +16,8 @@ class RestaurantDetailPage extends StatefulWidget {
   State<RestaurantDetailPage> createState() => _RestaurantDetailPageState();
 }
 
-class _RestaurantDetailPageState extends State<RestaurantDetailPage> with TickerProviderStateMixin {
+class _RestaurantDetailPageState extends State<RestaurantDetailPage>
+    with TickerProviderStateMixin {
   late Future<RestaurantDetail> restaurantDetail;
 
   Future<RestaurantDetail> fetchData() async {
@@ -39,7 +40,9 @@ class _RestaurantDetailPageState extends State<RestaurantDetailPage> with Ticker
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(),
+      appBar: AppBar(
+        backgroundColor: Theme.of(context).colorScheme.primary,
+      ),
       body: FutureBuilder<RestaurantDetail>(
         future: restaurantDetail,
         builder:
@@ -68,7 +71,7 @@ class _RestaurantDetailPageState extends State<RestaurantDetailPage> with Ticker
                   },
                 ),
                 Container(
-                  padding: EdgeInsets.all(10),
+                  padding: EdgeInsets.all(15),
                   child: Column(
                     children: [
                       Align(
@@ -93,33 +96,25 @@ class _RestaurantDetailPageState extends State<RestaurantDetailPage> with Ticker
                         ],
                       ),
                       Divider(),
-                      SingleChildScrollView(
-                        scrollDirection: Axis.horizontal,
-                        child: Wrap(
-                          spacing: 10,
-                          // mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      Container(
+                        padding: EdgeInsets.symmetric(vertical: 10, horizontal: 0),
+                        child: Column(
                           children: [
-                            for (Tag tag in restaurant.tags)
-                              Container(
-                                padding: EdgeInsets.symmetric(
-                                    horizontal: 5.0, vertical: 0.5),
-                                decoration: BoxDecoration(
-                                    color:
-                                        Theme.of(context).colorScheme.primary,
-                                    border: Border.all(
-                                        color: Theme.of(context)
-                                            .colorScheme
-                                            .primary),
-                                    borderRadius: BorderRadius.circular(16.0)),
-                                child: Text(
-                                  "# ${tag.name}",
-                                  style: TextStyle(
-                                      color: Colors.white, fontSize: 20),
-                                ),
-                              ),
+                            TagList(restaurant: restaurant),
+                            SizedBox(height: 10,),
+                            Info(kind: InfoKind.address, info: "경기 남양주시 화도읍 비룡로 145 1층",),
+                            SizedBox(height: 10,),
+                            Info(kind: InfoKind.phoneNumber, info: "031-511-9226",),
                           ],
                         ),
                       ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceAround,
+                        children: [
+                          Text("지도"),
+                          Text("공유하기"),
+                        ],
+                      )
                     ],
                   ),
                 ),
@@ -135,25 +130,83 @@ class _RestaurantDetailPageState extends State<RestaurantDetailPage> with Ticker
       ),
     );
   }
-  Widget _buildItem(String item, Animation<double> animation) {
-    return SizeTransition(
-      sizeFactor: animation,
-      axis: Axis.horizontal,
-      child: Container(
-        margin: EdgeInsets.symmetric(horizontal: 5),
-        padding: EdgeInsets.all(8.0),
-        color: Colors.amber,
-        child: Text(
-          item,
-          style: TextStyle(fontSize: 16),
-        ),
+}
+
+class TagList extends StatelessWidget {
+  const TagList({
+    super.key,
+    required this.restaurant,
+  });
+
+  final RestaurantDetail restaurant;
+
+  @override
+  Widget build(BuildContext context) {
+    return SingleChildScrollView(
+      scrollDirection: Axis.horizontal,
+      child: Wrap(
+        spacing: 10,
+        // mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          for (Tag tag in restaurant.tags)
+            Container(
+              padding: EdgeInsets.symmetric(
+                  horizontal: 5.0, vertical: 0.5),
+              decoration: BoxDecoration(
+                  color:
+                  Theme.of(context).colorScheme.primary,
+                  border: Border.all(
+                      color: Theme.of(context)
+                          .colorScheme
+                          .primary),
+                  borderRadius: BorderRadius.circular(16.0)),
+              child: Text(
+                "# ${tag.name}",
+                style: TextStyle(
+                    color: Colors.white, fontSize: 20),
+              ),
+            ),
+        ],
       ),
     );
   }
 }
 
+class Info extends StatelessWidget {
+  final String kind;
+  final String info;
+  const Info({
+    super.key, required this.kind, required this.info,
+  });
 
+  getIcon(String kind) {
+    if(kind == InfoKind.address) {
+      return Icons.place;
+    } else if(kind == InfoKind.phoneNumber) {
+      return Icons.phone_iphone;
+    }
+  }
 
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: [
+        Icon(
+          getIcon(kind),
+          color: Colors.grey,
+        ),
+        SizedBox(
+          width: 10,
+        ),
+        Text(
+          info,
+          style: TextStyle(
+              fontSize: 18, fontWeight: FontWeight.normal),
+        ),
+      ],
+    );
+  }
+}
 
 class Rating extends StatelessWidget {
   const Rating({
@@ -175,4 +228,9 @@ class Rating extends StatelessWidget {
       ],
     );
   }
+}
+
+class InfoKind {
+  static String address = "address";
+  static String phoneNumber = "phoneNumber";
 }
