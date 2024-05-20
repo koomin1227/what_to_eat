@@ -19,11 +19,13 @@ class _RestaurantDetailPageState extends State<RestaurantDetailPage> {
   late Future<RestaurantDetail> restaurantDetail;
 
   Future<RestaurantDetail> fetchData() async {
-    Response res = await NetworkService.getRestaurantDetail(widget.restaurantId);
+    Response res = await NetworkService.getRestaurantDetail(
+        widget.restaurantId);
     if (res.statusCode == 404) {
       throw Exception('No data found for this restaurant');
     }
-    RestaurantDetail restaurantDetail = RestaurantDetail.fromJson(DataExtractor.extractData(res));
+    RestaurantDetail restaurantDetail = RestaurantDetail.fromJson(
+        DataExtractor.extractData(res));
     return restaurantDetail;
   }
 
@@ -36,31 +38,85 @@ class _RestaurantDetailPageState extends State<RestaurantDetailPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(),
-        body: FutureBuilder<RestaurantDetail>(
-          future: restaurantDetail,
-          builder: (BuildContext context, AsyncSnapshot<RestaurantDetail> snapshot) {
-            if (snapshot.connectionState == ConnectionState.waiting) {
-              return CircularProgressIndicator();
-            } else if (snapshot.hasError) {
-              return Text('Error: ${snapshot.error}');
-            } else if (snapshot.hasData) {
-              var restaurant = snapshot.data!;
-              return Column(
-                children: [
-                  Image.network(restaurant.thumbnail),
-                  Text('Name: ${restaurant.name}'),
-                  Text('ID: ${restaurant.restaurantId}'),
-                  Text('Tags: ${restaurant.tags.join(', ')}'),
-                ],
-              );
-            } else {
-              return Text('No data');
-            }
-          },
+      appBar: AppBar(),
+      body: FutureBuilder<RestaurantDetail>(
+        future: restaurantDetail,
+        builder: (BuildContext context,
+            AsyncSnapshot<RestaurantDetail> snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return CircularProgressIndicator();
+          } else if (snapshot.hasError) {
+            return Text('Error: ${snapshot.error}');
+          } else if (snapshot.hasData) {
+            var restaurant = snapshot.data!;
+            return Column(
+              children: [
+                LayoutBuilder(
+                  builder: (BuildContext context, BoxConstraints constraints) {
+                    double width = constraints.maxWidth *
+                        0.8; // Image width is 80% of the available width
+                    double aspectRatio = 345 / 222; // Original aspect ratio
+                    return AspectRatio(
+                      aspectRatio: aspectRatio,
+                      child: Image.network(
+                        restaurant.thumbnail,
+                        width: width,
+                        fit: BoxFit.cover,
+                      ),
+                    );
+                  },
+                ),
+                Container(
+                  padding: EdgeInsets.all(10),
+                  child: Column(
+                    children: [
+                      Align(
+                        alignment: Alignment.topLeft,
+                        child: Text(
+                          restaurant.name,
+                          style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
+                        ),
+                      ),
+                      Row(
+                        children: [
+                          Rating(),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+
+                Text('Name: ${restaurant.name}'),
+                Text('ID: ${restaurant.restaurantId}'),
+                Text('Tags: ${restaurant.tags.join(', ')}'),
+              ],
+            );
+          } else {
+            return Text('No data');
+          }
+        },
 
 
+      ),
+    );
+  }
+}
+
+class Rating extends StatelessWidget {
+  const Rating({
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: [
+        Icon(Icons.star, color: Colors.yellow.shade600,),
+        Text(
+          "4.9",
+          style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
         ),
+      ],
     );
   }
 }
