@@ -77,14 +77,10 @@ class _RestaurantDetailPageState extends State<RestaurantDetailPage>
                     child: Column(
                       children: [
                         Title(restaurant: restaurant),
-                        Divider(
-                          thickness: 0.5,
-                        ),
+                        Divider(thickness: 0.5),
                         DetailInfo(restaurant: restaurant),
                         ActionButtons(),
-                        Divider(
-                          thickness: 0.5,
-                        ),
+                        Divider(thickness: 0.5),
                         Reviews(reviews: restaurant.reviews,),
                       ],
                     ),
