@@ -7,16 +7,16 @@ import 'package:what_to_eat/utils/data_extractor.dart';
 import '../models/restaurantDetail.dart';
 import '../models/tag.dart';
 
-class RestaurantDetailPage extends StatefulWidget {
+class RestaurantDetailScreen extends StatefulWidget {
   final String restaurantId;
 
-  const RestaurantDetailPage({super.key, required this.restaurantId});
+  const RestaurantDetailScreen({super.key, required this.restaurantId});
 
   @override
-  State<RestaurantDetailPage> createState() => _RestaurantDetailPageState();
+  State<RestaurantDetailScreen> createState() => _RestaurantDetailScreenState();
 }
 
-class _RestaurantDetailPageState extends State<RestaurantDetailPage>
+class _RestaurantDetailScreenState extends State<RestaurantDetailScreen>
     with TickerProviderStateMixin {
   late Future<RestaurantDetail> restaurantDetail;
   var appBarTitle = "";

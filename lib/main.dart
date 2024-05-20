@@ -1,8 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'screens/restaurant_page.dart';
-import 'screens/vote_page.dart';
+import 'screens/restaurant_list_screen.dart';
+import 'screens/vote_screen.dart';
 
 void main() {
   runApp(const MyApp());
@@ -35,7 +35,7 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   int _selectedIndex = 0;
-  List<Widget> pages = [RestaurantPage(), VotePage()];
+  List<Widget> pages = [RestaurantListScreen(), VoteScreen()];
 
   @override
   Widget build(BuildContext context) {

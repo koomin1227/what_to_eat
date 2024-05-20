@@ -5,16 +5,16 @@ import 'package:what_to_eat/utils/data_extractor.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import '../models/tag.dart';
 import '../models/restaurant.dart';
-import 'restaurant_datail_page.dart';
+import 'restaurant_detail_screen.dart';
 
-class RestaurantPage extends StatefulWidget {
-  const RestaurantPage({super.key});
+class RestaurantListScreen extends StatefulWidget {
+  const RestaurantListScreen({super.key});
 
   @override
-  State<StatefulWidget> createState() => RestaurantPageState();
+  State<StatefulWidget> createState() => RestaurantListScreenState();
 }
 
-class RestaurantPageState extends State<RestaurantPage> {
+class RestaurantListScreenState extends State<RestaurantListScreen> {
   SearchOption searchOption = SearchOption(false, selectedPlace: "전체", searchText: "");
   String selectedPlace = "전체";
   String searchText = "";
@@ -327,7 +327,7 @@ class RestaurantCard extends StatelessWidget {
     return GestureDetector(
       onTap: () {
         Navigator.push(context,
-            MaterialPageRoute(builder: (context) => RestaurantDetailPage(restaurantId: restaurant.restaurantId,)));
+            MaterialPageRoute(builder: (context) => RestaurantDetailScreen(restaurantId: restaurant.restaurantId,)));
       },
       child: Container(
           width: 190,
