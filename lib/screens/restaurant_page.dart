@@ -1,11 +1,11 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:what_to_eat/models/res.dart';
 import 'package:what_to_eat/services/network_service.dart';
 import 'package:what_to_eat/utils/data_extractor.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import '../models/tag.dart';
 import '../models/restaurant.dart';
+import 'restaurant_datail_page.dart';
 
 class RestaurantPage extends StatefulWidget {
   const RestaurantPage({super.key});
@@ -324,71 +324,77 @@ class RestaurantCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-        width: 190,
-        padding: EdgeInsets.symmetric(vertical: 5, horizontal: 5),
-        margin: EdgeInsets.only(top: 10.0),
-        decoration: BoxDecoration(
-            border: Border.all(color: Colors.grey),
-            borderRadius: BorderRadius.circular(8.0)
-        ),
-        child: Column(
-          children: [
-            Image.network(
-              restaurant.thumbnail,
-              width: 180,
-              height: 80,
-              fit: BoxFit.cover,
-            ),
-            Align(
-              alignment: Alignment.topLeft,
-              child: Padding(
-                padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 0),
-                child: Text(
-                  restaurant.name,
-                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
-                  textAlign: TextAlign.left,
-                  overflow: TextOverflow.ellipsis,
-                    maxLines: 1,
-                ),
+    return GestureDetector(
+      onTap: () {
+        Navigator.push(context,
+            MaterialPageRoute(builder: (context) => RestaurantDetailPage()));
+      },
+      child: Container(
+          width: 190,
+          padding: EdgeInsets.symmetric(vertical: 5, horizontal: 5),
+          margin: EdgeInsets.only(top: 10.0),
+          decoration: BoxDecoration(
+              border: Border.all(color: Colors.grey),
+              borderRadius: BorderRadius.circular(8.0)
+          ),
+          child: Column(
+            children: [
+              Image.network(
+                restaurant.thumbnail,
+                width: 180,
+                height: 80,
+                fit: BoxFit.cover,
               ),
-            ),
-            Divider(
-              height: 1,
-              color: Colors.grey,
-            ),
-            SizedBox(height: 7,),
-            Container(
-              // height: 50,
-              constraints: BoxConstraints(maxHeight: 55),
-              child: Align(
+              Align(
                 alignment: Alignment.topLeft,
-                child: ClipRect(
-                  child: Wrap(
-                    direction: Axis.horizontal,
-                    alignment: WrapAlignment.start,
-                    spacing: 5,
-                    runSpacing: 5,
-                    children: [
-                      for(Tag tag in restaurant.tags)
-                        Container(
-                          padding: EdgeInsets.symmetric(horizontal: 5.0, vertical: 0.5),
-                          decoration: BoxDecoration(
-                              color: Theme.of(context).colorScheme.primary,
-                              border: Border.all(color: Theme.of(context).colorScheme.primary),
-                              borderRadius: BorderRadius.circular(16.0)
-                          ),
-                          child: Text("# ${tag.name}",
-                            style: TextStyle(color: Colors. white),
-                          ),
-                        )
-                    ],
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 0),
+                  child: Text(
+                    restaurant.name,
+                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+                    textAlign: TextAlign.left,
+                    overflow: TextOverflow.ellipsis,
+                      maxLines: 1,
                   ),
                 ),
               ),
-            )
-          ],
-        ));
+              Divider(
+                height: 1,
+                color: Colors.grey,
+              ),
+              SizedBox(height: 7,),
+              Container(
+                // height: 50,
+                constraints: BoxConstraints(maxHeight: 55),
+                child: Align(
+                  alignment: Alignment.topLeft,
+                  child: ClipRect(
+                    child: Wrap(
+                      direction: Axis.horizontal,
+                      alignment: WrapAlignment.start,
+                      spacing: 5,
+                      runSpacing: 5,
+                      children: [
+                        for(Tag tag in restaurant.tags)
+                          Container(
+                            padding: EdgeInsets.symmetric(horizontal: 5.0, vertical: 0.5),
+                            decoration: BoxDecoration(
+                                color: Theme.of(context).colorScheme.primary,
+                                border: Border.all(color: Theme.of(context).colorScheme.primary),
+                                borderRadius: BorderRadius.circular(16.0)
+                            ),
+                            child: Text("# ${tag.name}",
+                              style: TextStyle(color: Colors. white),
+                            ),
+                          )
+                      ],
+                    ),
+                  ),
+                ),
+              )
+            ],
+          )),
+    );
   }
 }
 
