@@ -1,10 +1,9 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:what_to_eat/services/tag_service.dart';
 
 import '../../models/tag.dart';
 import '../../screens/restaurant_list_screen.dart';
-import '../../services/network_service.dart';
-import '../../utils/data_extractor.dart';
 
 class TagSelector extends StatefulWidget {
   final SearchOption searchOption;
@@ -20,6 +19,7 @@ class TagSelector extends StatefulWidget {
 class _TagSelectorState extends State<TagSelector> {
   List<String> tags = [];
   bool _expanded = false;
+  TagService tagService = TagService();
 
   void _toggleExpand() {
     setState(() {
@@ -28,8 +28,7 @@ class _TagSelectorState extends State<TagSelector> {
   }
 
   parseTags() async {
-    var response = await NetworkService.getTags();
-    List<Tag> tagList = Tag.listFromJson(DataExtractor.extractData(response));
+    List<Tag> tagList = await tagService.getTagList();
     tags = tagList.map((toElement) => toElement.name).toList();
     setState(() {});
   }
