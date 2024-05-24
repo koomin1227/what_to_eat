@@ -1,8 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:http/http.dart';
-import 'package:what_to_eat/services/network_service.dart';
-import 'package:what_to_eat/utils/data_extractor.dart';
+import 'package:what_to_eat/services/restaurant_service.dart';
 
 import '../models/restaurantDetail.dart';
 import '../widgets/restaurant_detail_screen/action_buttons_widget.dart';
@@ -22,18 +20,17 @@ class RestaurantDetailScreen extends StatefulWidget {
 
 class _RestaurantDetailScreenState extends State<RestaurantDetailScreen>
     with TickerProviderStateMixin {
+  RestaurantService restaurantService = RestaurantService();
   late Future<RestaurantDetail> restaurantDetail;
-  var appBarTitle = "";
 
   Future<RestaurantDetail> fetchData() async {
-    Response res =
-        await NetworkService.getRestaurantDetail(widget.restaurantId);
-    if (res.statusCode == 404) {
+    try {
+      RestaurantDetail restaurantDetail =
+          await restaurantService.getRestaurant(widget.restaurantId);
+      return restaurantDetail;
+    } on Exception catch (e) {
       throw Exception('No data found for this restaurant');
     }
-    RestaurantDetail restaurantDetail =
-        RestaurantDetail.fromJson(DataExtractor.extractData(res));
-    return restaurantDetail;
   }
 
   @override
