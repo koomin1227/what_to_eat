@@ -17,7 +17,7 @@ class RestaurantService {
     return _instance;
   }
 
-  Future<List<Restaurant>> getRestaurantListByTag(String place, List<String> tags, int page) async {
+  Future<List<Restaurant>> getRestaurantListByTag(String place, List tags, int page) async {
     var queryParameters = _makeQueryOptions(place, tags, page);
     var response = await dio.get("/restaurants/tag", queryParameters: queryParameters);
     return Restaurant.listFromJson(response.data);
@@ -36,7 +36,7 @@ class RestaurantService {
     return RestaurantDetail.fromJson(response.data);
   }
 
-  static Map<String, dynamic> _makeQueryOptions(String place, List<String> tags, int page) {
+  static Map<String, dynamic> _makeQueryOptions(String place, List tags, int page) {
     Map<String, dynamic> query = {};
     if (place != "전체") {
       query["place"] = place;

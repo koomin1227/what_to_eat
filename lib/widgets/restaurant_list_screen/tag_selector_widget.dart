@@ -1,51 +1,23 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:what_to_eat/services/tag_service.dart';
+import 'package:get/get.dart';
+import 'package:get/get_core/src/get_main.dart';
 
-import '../../models/tag.dart';
-import '../../screens/restaurant_list_screen.dart';
+import '../../controllers/restaurant_controller.dart';
 
 class TagSelector extends StatefulWidget {
-  final SearchOption searchOption;
-  final updateSearchOption;
-
-  const TagSelector(
-      {super.key, required this.searchOption, this.updateSearchOption});
-
   @override
   State<TagSelector> createState() => _TagSelectorState();
 }
 
 class _TagSelectorState extends State<TagSelector> {
-  List<String> tags = [];
+  final RestaurantController rc = Get.find<RestaurantController>();
   bool _expanded = false;
-  TagService tagService = TagService();
 
   void _toggleExpand() {
     setState(() {
       _expanded = !_expanded;
     });
-  }
-
-  parseTags() async {
-    List<Tag> tagList = await tagService.getTagList();
-    tags = tagList.map((toElement) => toElement.name).toList();
-    setState(() {});
-  }
-
-  void search() {
-    setState(() {
-      widget.searchOption.isSearch = false;
-      widget.updateSearchOption();
-    });
-
-    _toggleExpand();
-  }
-
-  @override
-  void initState() {
-    parseTags();
-    super.initState();
   }
 
   @override
@@ -77,38 +49,41 @@ class _TagSelectorState extends State<TagSelector> {
                 curve: Curves.easeInOut,
                 constraints: BoxConstraints(maxHeight: _expanded ? 600 : 25),
                 child: ClipRect(
-                  child: Wrap(
-                    direction: Axis.horizontal,
-                    alignment: WrapAlignment.center,
-                    spacing: 10,
-                    runSpacing: 10,
-                    children: [
-                      for (String tag in tags)
-                        buildTagSelectButton(tag, context),
-                      SizedBox(
-                        height: 10,
-                      ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceAround,
-                        children: [
-                          TagActionButton(
-                            name: "초기화",
-                            onPressedAction: () {
-                              setState(() {
-                                widget.searchOption.selectedTags.clear();
-                              });
-                            },
-                          ),
-                          TagActionButton(
-                            name: "결과보기",
-                            onPressedAction: search,
-                          )
-                        ],
-                      ),
-                      SizedBox(
-                        height: 8,
-                      ),
-                    ],
+                  child: Obx(
+                    () => Wrap(
+                      direction: Axis.horizontal,
+                      alignment: WrapAlignment.center,
+                      spacing: 10,
+                      runSpacing: 10,
+                      children: [
+                        for (String tag in rc.tags)
+                          buildTagSelectButton(tag, context),
+                        SizedBox(
+                          height: 10,
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceAround,
+                          children: [
+                            TagActionButton(
+                              name: "초기화",
+                              onPressedAction: () {
+                                rc.refreshTags();
+                              },
+                            ),
+                            TagActionButton(
+                              name: "결과보기",
+                              onPressedAction: () {
+                                rc.searchRestaurantByTag();
+                                _toggleExpand();
+                              },
+                            )
+                          ],
+                        ),
+                        SizedBox(
+                          height: 8,
+                        ),
+                      ],
+                    ),
                   ),
                 ),
               )
@@ -152,33 +127,29 @@ class _TagSelectorState extends State<TagSelector> {
   SizedBox buildTagSelectButton(String tag, BuildContext context) {
     return SizedBox(
       height: 25,
-      child: TextButton(
-        style: TextButton.styleFrom(
-          backgroundColor: widget.searchOption.selectedTags.contains(tag)
-              ? Theme.of(context).colorScheme.primary
-              : Theme.of(context).colorScheme.background,
-          padding: const EdgeInsets.symmetric(vertical: 0, horizontal: 4),
-          side: BorderSide(
-              color: widget.searchOption.selectedTags.contains(tag)
+      child: Obx(() => TextButton(
+            style: TextButton.styleFrom(
+              backgroundColor: rc.selectedTags.contains(tag)
                   ? Theme.of(context).colorScheme.primary
-                  : Colors.grey),
-        ),
-        onPressed: () {
-          if (widget.searchOption.selectedTags.contains(tag)) {
-            widget.searchOption.selectedTags.remove(tag);
-          } else {
-            widget.searchOption.selectedTags.add(tag);
-          }
-          setState(() {});
-        },
-        child: Text(
-          "# ${tag}",
-          style: TextStyle(
-              color: widget.searchOption.selectedTags.contains(tag)
-                  ? Theme.of(context).colorScheme.background
-                  : Colors.black),
-        ),
-      ),
+                  : Theme.of(context).colorScheme.background,
+              padding: const EdgeInsets.symmetric(vertical: 0, horizontal: 4),
+              side: BorderSide(
+                  color: rc.selectedTags.contains(tag)
+                      ? Theme.of(context).colorScheme.primary
+                      : Colors.grey),
+            ),
+            onPressed: () {
+              rc.toggleTag(tag);
+              setState(() {});
+            },
+            child: Text(
+              "# ${tag}",
+              style: TextStyle(
+                  color: rc.selectedTags.contains(tag)
+                      ? Theme.of(context).colorScheme.background
+                      : Colors.black),
+            ),
+          )),
     );
   }
 }
@@ -191,6 +162,8 @@ class TagActionButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final RestaurantController rc = Get.find<RestaurantController>();
+
     return SizedBox(
       width: 160,
       height: 35,
