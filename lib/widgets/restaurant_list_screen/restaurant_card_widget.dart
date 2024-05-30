@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 import '../../models/restaurant.dart';
 import '../../models/tag.dart';
@@ -20,12 +21,7 @@ class RestaurantCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        Navigator.push(
-            context,
-            MaterialPageRoute(
-                builder: (context) => RestaurantDetailScreen(
-                  restaurantId: restaurant.restaurantId,
-                )));
+        Get.to(RestaurantDetailScreen(restaurantId: restaurant.restaurantId));
       },
       child: Container(
           width: 190,
