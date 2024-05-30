@@ -26,4 +26,6 @@ dev_dependencies:
   flutter_lints: ^3.0.0
 
 flutter:
+  assets:
+    - assets/images/kakao_login_medium_narrow.png
   uses-material-design: true
