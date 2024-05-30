@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:get/get_navigation/src/root/get_material_app.dart';
 import 'screens/restaurant_list_screen.dart';
 import 'screens/vote_screen.dart';
 
@@ -13,7 +14,7 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return GetMaterialApp(
       title: 'Flutter Demo',
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.orange.shade600, primary: Color(0xffF77248)),
@@ -35,7 +36,7 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   int _selectedIndex = 0;
-  List<Widget> pages = [RestaurantListScreen(), VoteScreen()];
+  List<Widget> _pages = [RestaurantListScreen(), VoteScreen()];
 
   @override
   Widget build(BuildContext context) {
@@ -43,18 +44,11 @@ class _MyHomePageState extends State<MyHomePage> {
       appBar: AppBar(
         toolbarHeight: 10,
         backgroundColor: Theme.of(context).colorScheme.primary,
-        // title: Text("뭐먹을까"),
-        // flexibleSpace: Container(
-        //   decoration: BoxDecoration(
-        //     gradient: LinearGradient(
-        //       begin: Alignment.topCenter,
-        //         end: Alignment.bottomCenter,
-        //         colors: <Color>[Theme.of(context).colorScheme.primary, Colors.white]
-        //     )
-        //   ),
-        // ),
       ),
-      body: pages[_selectedIndex],
+      body: IndexedStack(
+        index: _selectedIndex,
+        children: _pages,
+      ),
       bottomNavigationBar: BottomNavigationBar(
         onTap: (int index) {
           setState(() {
