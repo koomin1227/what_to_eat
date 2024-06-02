@@ -22,6 +22,8 @@ if (flutterVersionName == null) {
     flutterVersionName = '1.0'
 }
 
+def kakaoNativeId = localProperties.getProperty('kakao.nativeId')
+
 android {
     namespace "com.example.what_to_eat"
     compileSdk flutter.compileSdkVersion
@@ -49,6 +51,7 @@ android {
         targetSdkVersion flutter.targetSdkVersion
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName
+        manifestPlaceholders["kakaoNativeId"] = kakaoNativeId
     }
 
     buildTypes {
