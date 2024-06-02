@@ -2,7 +2,6 @@ import 'package:dio/dio.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:get/get.dart';
-import 'package:get/get_core/src/get_main.dart';
 import 'package:kakao_flutter_sdk_user/kakao_flutter_sdk_user.dart';
 import 'package:what_to_eat/models/jwt_tokens.dart';
 
@@ -12,7 +11,7 @@ class AuthService {
   static final AuthService _instance = AuthService._internal();
 
   final Dio dio = DioService().to();
-  final storage = new FlutterSecureStorage();
+  final storage = FlutterSecureStorage();
 
   AuthService._internal();
 
@@ -32,16 +31,20 @@ class AuthService {
   loginWithKakao() async {
     OAuthToken? token = await getKakaoToken();
     if (token == null) {
-      Get.offAllNamed('/');
+      print("로그인 실패");
+      throw Exception('login failed');
     }
-    String? accessToken = token?.accessToken;
+    String? accessToken = token.accessToken;
     var response = await dio.post('/auth/kakao', data: {
       "token": accessToken,
     });
     if (response.statusCode == 200) {
       JwtTokens jwtTokens = JwtTokens.fromJson(response.data);
-      storage.write(key: 'accessToken', value: jwtTokens.accessToken);
-      storage.write(key: 'refreshToken', value: jwtTokens.refreshToken);
+      await storage.write(key: 'accessToken', value: jwtTokens.accessToken);
+      await storage.write(key: 'refreshToken', value: jwtTokens.refreshToken);
+    } else {
+      print("로그인 실패");
+      throw Exception('login failed');
     }
   }
 
