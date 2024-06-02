@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:what_to_eat/services/restaurant_service.dart';
 
@@ -28,7 +27,7 @@ class _RestaurantDetailScreenState extends State<RestaurantDetailScreen>
       RestaurantDetail restaurantDetail =
           await restaurantService.getRestaurant(widget.restaurantId);
       return restaurantDetail;
-    } on Exception catch (e) {
+    } on Exception {
       throw Exception('No data found for this restaurant');
     }
   }

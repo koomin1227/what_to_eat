@@ -1,7 +1,5 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:get/get_core/src/get_main.dart';
 
 import '../../controllers/restaurant_controller.dart';
 
@@ -131,7 +129,7 @@ class _TagSelectorState extends State<TagSelector> {
             style: TextButton.styleFrom(
               backgroundColor: rc.selectedTags.contains(tag)
                   ? Theme.of(context).colorScheme.primary
-                  : Theme.of(context).colorScheme.background,
+                  : Theme.of(context).colorScheme.surface,
               padding: const EdgeInsets.symmetric(vertical: 0, horizontal: 4),
               side: BorderSide(
                   color: rc.selectedTags.contains(tag)
@@ -143,10 +141,10 @@ class _TagSelectorState extends State<TagSelector> {
               setState(() {});
             },
             child: Text(
-              "# ${tag}",
+              "# $tag",
               style: TextStyle(
                   color: rc.selectedTags.contains(tag)
-                      ? Theme.of(context).colorScheme.background
+                      ? Theme.of(context).colorScheme.surface
                       : Colors.black),
             ),
           )),
@@ -179,7 +177,7 @@ class TagActionButton extends StatelessWidget {
           child: Text(
             name,
             style: TextStyle(
-                color: Theme.of(context).colorScheme.background,
+                color: Theme.of(context).colorScheme.surface,
                 fontWeight: FontWeight.bold,
                 fontSize: 15),
           )),

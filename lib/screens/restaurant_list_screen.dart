@@ -1,5 +1,5 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:get/get.dart';
 
 import '../controllers/restaurant_controller.dart';
@@ -22,6 +22,12 @@ class RestaurantListScreenState extends State<RestaurantListScreen> {
     return Column(
       children: [
         RestaurantSearchBar(),
+        TextButton(onPressed: () async {
+          var storage = FlutterSecureStorage();
+          await storage.delete(key: 'token');
+          Get.toNamed('/');
+          // st
+        }, child: Text("로그아웃")),
         SizedBox(width: 10, height: 10),
         PlaceSelector(),
         TagSelector(),

@@ -1,7 +1,5 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/instance_manager.dart';
-import 'package:get/route_manager.dart';
 import 'package:what_to_eat/controllers/restaurant_controller.dart';
 
 class RestaurantSearchBar extends StatelessWidget {

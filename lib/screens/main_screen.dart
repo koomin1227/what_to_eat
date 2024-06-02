@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:what_to_eat/screens/restaurant_list_screen.dart';
 import 'package:what_to_eat/screens/vote_screen.dart';

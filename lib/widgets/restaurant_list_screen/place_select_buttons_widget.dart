@@ -1,7 +1,5 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:get/get_core/src/get_main.dart';
 
 import '../../controllers/restaurant_controller.dart';
 
@@ -64,7 +62,7 @@ class PlaceButton extends StatelessWidget {
                 padding: const EdgeInsets.symmetric(vertical: 0, horizontal: 4),
                 backgroundColor: rc.place.value == buttonName
                     ? Theme.of(context).colorScheme.primary
-                    : Theme.of(context).colorScheme.background),
+                    : Theme.of(context).colorScheme.surface),
             child: Text(buttonName,
                 style: rc.place.value == buttonName
                     ? TextStyle(color: Colors.white)
